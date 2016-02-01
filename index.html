@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Fantasy Stats Entry</title>
+    <script type="text/javascript" src="vendor/jquery.js"></script>
+    <script type="text/javascript" src="vendor/underscore.js"></script>
+    <script type="text/javascript" src="vendor/backbone.js"></script>
+    <script type="text/javascript" src="vendor/moment.js"></script>
+    <script type="text/javascript" src="app/preloads.js"></script>
+    <script type="text/javascript" src="app/bootstrap.js"></script>
+    <script type="text/javascript" src="app/models.js"></script>
+    <script type="text/javascript" src="app/collections.js"></script>
+    <script type="text/javascript" src="app/views.js"></script>
+    <script type="text/javascript" src="app/application.js"></script>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="main-content">
+      <div id="header">
+        <div id="inputs">
+          <form>
+            <input type="text" id="who-input" placeholder="who">
+            <input type="text" id="what-input" placeholder="what">
+            <span id="points"> 0 </span><span>points</span>
+          </form>
+        </div>
+      </div>
+      <div id="body">
+        <div id="left-players">
+          <h3 class="team-name"></h3>
+          <p class="score"></p>
+          <ul class="players">
+          </ul>
+        </div>
+        <div id="stat-list">
+          <ul class="stats">
+          </ul>
+        </div>
+        <div id="right-players">
+          <h3 class="team-name"></h3>
+          <p class="score"></p>
+          <ul class="players">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
