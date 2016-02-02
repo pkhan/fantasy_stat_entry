@@ -119,6 +119,7 @@ Models.AutocompleteItem = Models.Base.extend({
     id: null,
     name: '',
     eligible: true,
-    selected: false
+    selected: false,
+    highlighted: false
   }
 });

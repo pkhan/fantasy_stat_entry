@@ -58,6 +58,12 @@ Views.Player = Views.ItemBase.extend({
   }
 });
 
+var COMMA = 188;
+var ENTER = 13;
+var TAB = 9;
+var UP = 38;
+var DOWN = 40;
+
 Views.AutocompleteInput = Views.Base.extend({
   events: {
     'keyup': 'handleChange',
@@ -92,18 +98,38 @@ Views.AutocompleteInput = Views.Base.extend({
     this.autocompleteList.hide();
   },
 
-  handleChange: function() {
+  handleChange: function(evt) {
+    if(this.checkForControlInput(evt)) {
+      return
+    }
     var input = this.$el.val();
     this.selectionList.filterAndSetMatches(input);
+  },
+
+  checkForControlInput: function(evt) {
+    var code = evt.which;
+    var val = false;
+    if(code == COMMA) {
+      val = true;
+    } else if(code == TAB) {
+      val = true;
+    } else if(code == UP) {
+      this.selectionList.moveHighlightUp();
+      val = true;
+    } else if(code == DOWN) {
+      this.selectionList.moveHighlightDown();
+      val = true;
+    }
+    if(val) {
+      evt.preventDefault();
+    }
+    return val;
   }
 
 
 });
 
 Views.AutocompleteList = Views.Base.extend({
-  events: {
-    'click li': 'handleClick'
-  },
   tagName: 'div',
   className: 'autocomplete-list',
 
@@ -124,11 +150,6 @@ Views.AutocompleteList = Views.Base.extend({
     this.$el.append($ul);
     $('#main-content').append(this.el);
     return this;
-  },
-
-  handleClick: function(evt) {
-    evt.preventDefault();
-    evt.stopPropagation();
   },
 
   updatePosition: function() {
@@ -167,6 +188,12 @@ Views.AutocompleteItemView = Views.ItemBase.extend({
       this.$el.addClass('selected');
     } else {
       this.$el.removeClass('selected');
+    }
+
+    if(this.model.get('highlighted')) {
+      this.$el.addClass('highlighted');
+    } else {
+      this.$el.removeClass('highlighted');
     }
 
     if(this.model.get('eligible')) {

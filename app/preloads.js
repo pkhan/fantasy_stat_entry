@@ -76,7 +76,7 @@ window._preloads = {
   ],
   rules: [
     {
-      name: 'Talking about her parents’ relationship',
+      name: 'Talking about her parents\' relationship',
       points: 5
     },
     {
@@ -96,15 +96,15 @@ window._preloads = {
       points: 10
     },
     {
-      name: 'Saying “I’m not here to make friends”',
+      name: 'Saying "I\'m not here to make friends"',
       points: 20
     },
     {
-      name: 'Saying “I’m falling for you” to Ben or “I’m falling for him” to the camera',
+      name: 'Saying "I\'m falling for you" to Ben or "I\'m falling for him" to the camera',
       points: 20
     },
     {
-      name: 'Saying “I love you” to Ben',
+      name: 'Saying "I love you" to Ben',
       points: 30
     },
     {
@@ -112,7 +112,7 @@ window._preloads = {
       points: 15
     },
     {
-      name: 'Telling Ben that someone in the house “is not here for the right reasons”',
+      name: 'Telling Ben that someone in the house "is not here for the right reasons"',
       points: 30
     },
     {
@@ -128,11 +128,11 @@ window._preloads = {
       points: 5
     },
     {
-      name: 'Interrupting someone’s one-on-one time',
+      name: 'Interrupting someone\'s one-on-one time',
       points: 5
     },
     {
-      name: 'Bonus: using the phrase “steal Ben away” during said interruption',
+      name: 'Bonus: using the phrase "steal Ben away" during said interruption',
       points: 5
     },
     {

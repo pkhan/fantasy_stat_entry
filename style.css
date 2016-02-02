@@ -19,6 +19,22 @@
   padding: 0;
 }
 
-.autocomplete-list li:hover {
+.autocomplete-list li:hover,.autocomplete-list li.highlighted {
   background: #88F;
+}
+
+#what-input {
+  width: 400px;
+}
+
+#body>div {
+  float: left;
+}
+
+#body #right-players {
+  float: right;
+}
+
+#body:after {
+  clear: both;
 }
