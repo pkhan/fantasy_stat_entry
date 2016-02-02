@@ -15,16 +15,10 @@ $(document).on('ready', function() {
     model: app.teams.get(1)
   });
 
-  app.nameInput = new app.Views.AutocompleteInput({
-    allowMultiple: true,
-    el: '#who-input',
-    selectionList: app.globalStore.players
-  });
+  app.headerView = new app.Views.Header();
 
-  app.ruleInput = new app.Views.AutocompleteInput({
-    allowMultiple: false,
-    el: '#what-input',
-    selectionList: app.globalStore.rules
+  app.statsView = new Views.StatsView({
+    collection: app.stats
   });
 
 });

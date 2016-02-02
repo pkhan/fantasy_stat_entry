@@ -26,10 +26,14 @@ Views.PlayerList = Views.Base.extend({
   initialize: function() {
     this.subViews = [];
     Views.Base.prototype.initialize.apply(this, arguments);
+    this.listenTo(this.model, 'change', function() {
+      this.update();
+    });
   },
 
   render: function() {
     var frag = window.document.createDocumentFragment();
+    this.$('.team-name').text(this.model.get('name'));
     var $ul = this.$('ul.players');
     this.subViews = this.model.players().map(function(player) {
       var subView = new Views.Player({
@@ -39,6 +43,10 @@ Views.PlayerList = Views.Base.extend({
       return subView;
     });
     $ul.empty().append(frag);
+  },
+
+  update: function() {
+    this.$('.score').text(this.model.get('score'));
   }
 
 });
@@ -58,6 +66,86 @@ Views.Player = Views.ItemBase.extend({
   }
 });
 
+Views.StatsView = Views.Base.extend({
+  el: '#stat-list',
+
+  initialize: function(options) {
+    Views.Base.prototype.initialize.apply(this, arguments);
+    this.collection = options.collection;
+    this.listenTo(this.collection, 'add', function(stat) {
+      this.addStat(stat);
+    });
+    this.subViews = [];
+  },
+
+  addStat: function(stat) {
+    console.log("addstat");
+    var subView = new Views.StatItemView({
+      model: stat
+    });
+    this.$('ul').append(subView.render().el);
+    this.subViews.push(subView);
+  }
+});
+
+Views.StatItemView = Views.ItemBase.extend({
+  tagName: 'li',
+  render: function() {
+    var timestamp = this.model.get('created_at').format('h:mm');
+    var who = this.model.player().get('name');
+    var what = this.model.rule().get('name');
+    var points = this.model.rule().get('points');
+    var together = timestamp + " - " + who + " : " + what + " + " + points;
+    this.$el.text(together);
+    return this;
+  }
+});
+
+Views.Header = Views.Base.extend({
+  el: '#header',
+  events: {
+    'submit form': 'handleSubmit'
+  },
+
+  initialize: function() {
+    this.nameInput = new app.Views.AutocompleteInput({
+      allowMultiple: true,
+      el: '#who-input',
+      selectionList: app.globalStore.players
+    });
+
+    this.ruleInput = new app.Views.AutocompleteInput({
+      allowMultiple: false,
+      el: '#what-input',
+      selectionList: app.globalStore.rules
+    });
+  },
+
+  handleSubmit: function(evt) {
+    console.log("two");
+    evt.preventDefault();
+    var selectedPlayers = this.nameInput.selectionList.selected();
+    var selectedRules = this.ruleInput.selectionList.selected();
+    if(selectedPlayers.length == 0 || selectedRules.length ==0) {
+      return;
+    }
+    var selectedRule = selectedRules[0];
+    selectedPlayers.forEach(function(player) {
+      app.globalStore.stats.add({
+        player_id: player.id,
+        rule_id: selectedRule.id
+      });
+      app.globalStore.players.get(player.id).updateScore();
+    });
+
+    this.nameInput.reset();
+    this.ruleInput.reset();
+    this.nameInput.$el.blur();
+    this.ruleInput.$el.blur();
+
+  }
+});
+
 var COMMA = 188;
 var ENTER = 13;
 var TAB = 9;
@@ -67,6 +155,7 @@ var DOWN = 40;
 Views.AutocompleteInput = Views.Base.extend({
   events: {
     'keyup': 'handleChange',
+    'keydown': 'handlePotentialControl',
     'focus': 'handleFocus',
     'blur': 'handleBlur'
   },
@@ -87,10 +176,15 @@ Views.AutocompleteInput = Views.Base.extend({
       selectionList: this.selectionList
     });
     this.autocompleteList.render();
-    this.selected = [];
+  },
+
+  reset: function() {
+    this.$el.val('');
+    this.selectionList.resetToBlank();
   },
 
   handleFocus: function() {
+    this.selectionList.resetToBlank();
     this.autocompleteList.show();
   },
 
@@ -99,31 +193,40 @@ Views.AutocompleteInput = Views.Base.extend({
   },
 
   handleChange: function(evt) {
-    if(this.checkForControlInput(evt)) {
-      return
+    var controlCodes = [ENTER,TAB,UP,DOWN,COMMA];
+    if(controlCodes.indexOf(evt.which) >= 0) {
+      return;
     }
     var input = this.$el.val();
     this.selectionList.filterAndSetMatches(input);
   },
 
-  checkForControlInput: function(evt) {
+  handlePotentialControl: function(evt) {
     var code = evt.which;
     var val = false;
-    if(code == COMMA) {
+    if(code == ENTER) {
+      console.log("one");
+      this.selectionList.setHighlightToSelection();
       val = true;
+    }
+    if(code == COMMA) {
+      this.selectionList.setHighlightToSelection();
+      val = true;
+      evt.preventDefault();
+      this.$el.val('');
     } else if(code == TAB) {
       val = true;
+      this.selectionList.setHighlightToSelection();
     } else if(code == UP) {
       this.selectionList.moveHighlightUp();
       val = true;
+      evt.preventDefault();
     } else if(code == DOWN) {
       this.selectionList.moveHighlightDown();
       val = true;
-    }
-    if(val) {
       evt.preventDefault();
     }
-    return val;
+
   }
 
 

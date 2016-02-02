@@ -24,7 +24,8 @@ Models.Team = Models.Base.extend({
   resourceName: 'team',
   defaults: {
     name: '',
-    id: null
+    id: null,
+    score: 0
   },
 
   initialize: function() {
@@ -41,12 +42,12 @@ Models.Team = Models.Base.extend({
     }
   },
 
-  score: function() {
+  updateScore: function() {
     var score = 0;
     this.players().forEach(function(player) {
       score += player.get('score');
     });
-    return score;
+    this.set('score', score);
   }
 });
 
@@ -80,9 +81,10 @@ Models.Player = Models.Base.extend({
   updateScore: function() {
     var score = 0;
     this.stats().forEach(function(stat) {
-      score += stat.rule.get('points');
+      score += stat.rule().get('points');
     });
     this.set('score', score);
+    this.team().updateScore();
   }
 });
 
@@ -106,9 +108,17 @@ Models.Stat = Models.Base.extend({
 
   rule: function() {
     if(app.globalStore.stats) {
-      return app.globalStore.stats.get(this.get('rule_id'));
+      return app.globalStore.rules.get(this.get('rule_id'));
     } else {
-      return [];
+      return null;
+    }
+  },
+
+  player: function() {
+    if(app.globalStore.players) {
+      return app.globalStore.players.get(this.get('player_id'));
+    } else {
+      return null;
     }
   }
 

@@ -77,6 +77,44 @@ Collections.AutocompleteItems = Collections.Base.extend({
     return this.filter({ eligible: true });
   },
 
+  selected: function() {
+    return this.filter({ selected: true });
+  },
+
+  resetToBlank: function() {
+    var first = true;
+    this.each(function(item) { 
+      item.set({
+        eligible: true,
+        selected: false,
+        highlighted: first
+      });
+      first = false;
+    });
+  },
+
+  resetToUnselected: function() {
+    var first = true;
+    this.each(function(item) {
+      if(!item.get('selected')){
+        item.set({
+          eligible: true,
+          highlighted: first
+        });
+        first = false;
+      }
+    });
+  },
+
+  setHighlightToSelection: function() {
+    this.currentHighlight().set({
+      selected: true,
+      highlighted: false,
+      eligible: false
+    });
+    this.resetToUnselected();
+  },
+
   filterAndSetMatches: function(input) {
     input = input.toLowerCase();
     var inputs = input.split(" ");
